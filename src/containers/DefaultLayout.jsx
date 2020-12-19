@@ -58,27 +58,6 @@ const DefaultLayout = props => {
         message.success('登出成功!')
     }
 
-    useEffect(() => {
-        let { pathname } = props.location
-        let timer
-
-        // 菜单收缩展开时 echarts 图表的自适应
-        if (pathname === '/' || pathname === '/index') {
-            timer = setTimeout(() => {
-                echarts.init(document.getElementById('bar')).resize()
-                echarts.init(document.getElementById('line')).resize()
-                echarts.init(document.getElementById('pie')).resize()
-                echarts.init(document.getElementById('pictorialBar')).resize()
-                echarts.init(document.getElementById('scatter')).resize()
-            }, 500)
-        } else {
-            timer = null
-        }
-        return () => {
-            timer && clearTimeout(timer)
-        }
-    })
-
     return (
         <Layout className='app'>
             <BackTop />
