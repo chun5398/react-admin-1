@@ -30,8 +30,10 @@ const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Ind
 const Product = loadable(() => import(/* webpackChunkName: 'list' */ '@/views/Product/Index'))
 
 const routes = [
-    { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
-    { path: '/product', exact: false, name: '产品管理', component: Product, auth: [1] }
+    { path: '/index', exact: true, name: '门店', component: Index },
+    { path: '/product', exact: false, name: '产品', component: Product },
+    { path: '/worksheet', exact: false, name: '工作表', component: null },
+    { path: '/reservation', exact: false, name: '预约', component: null }
 ]
 
 // { path: '/nav/dropdown', exact: false, name: '下拉菜单', component: DropdownView },

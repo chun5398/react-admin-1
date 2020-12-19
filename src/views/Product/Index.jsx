@@ -71,7 +71,7 @@ const Product = () => {
                     />
                     <Column title={'价格'} dataIndex={'prodPrice'} />
                     <Column title={'时长'} dataIndex={'timeService'} render={record => <span>{record} 分钟</span>} />
-                    <Column title={'时长'} dataIndex={'timeService'} render={record => <span>{record} 分钟</span>} />
+                    <Column title={'操作'} dataIndex={''} render={() => <a>删除</a>} />
                 </Table>
             </div>
         </Layout>

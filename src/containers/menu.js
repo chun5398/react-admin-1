@@ -22,8 +22,7 @@ const menu = [
     {
         title: '关于',
         key: '/about',
-        icon: 'user',
-        auth: [1]
+        icon: 'user'
     }
 ]
 
