@@ -1,10 +1,13 @@
 import axios from 'axios'
 
 // 这里取决于登录的时候将 token 存储在哪里
-const token = localStorage.getItem('token')
+const mtokenId = localStorage.getItem('mtokenId')
+
+const isDev = process.env.NODE_ENV === 'development'
 
 const instance = axios.create({
-    timeout: 5000
+    timeout: 5000,
+    baseURL: '/yuanle'
 })
 
 // 设置post请求头
@@ -14,7 +17,8 @@ instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlenco
 instance.interceptors.request.use(
     config => {
         // 将 token 添加到请求头
-        token && (config.headers.Authorization = token)
+        const data = config.data
+        config.data = { mtokenId: mtokenId, ...data }
         return config
     },
     error => {
@@ -26,7 +30,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     response => {
         if (response.status === 200) {
-            return Promise.resolve(response)
+            return Promise.resolve(response.data)
         } else {
             return Promise.reject(response)
         }

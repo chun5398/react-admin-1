@@ -6,11 +6,10 @@ const menu = [
         auth: [1]
     },
     {
-        title: '通用',
-        key: '/public',
+        title: '产品管理',
+        key: '/product',
         icon: 'appstore',
-        auth: [1],
-        subs: [{ title: '按钮', key: '/public/button', icon: '' }, { title: '图标', key: '/public/icon', icon: '' }]
+        auth: [1]
     },
     {
         title: '导航',

@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useReducer } from 'react'
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import { Layout, BackTop, message } from 'antd'
-import routes from '@/routes'
+import routes from '../routes/index'
 import echarts from 'echarts/lib/echarts'
-import avatar from '@/assets/images/user.jpg'
 import menus from './menu'
 import '@/style/layout.scss'
 
@@ -47,7 +46,7 @@ const DefaultLayout = props => {
 
     const [state, dispatch] = useReducer(reducer, { menuToggle: false })
 
-    let { auth } = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : ''
+    // let { auth } = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : ''
 
     const menuClick = () => {
         dispatch({ type: 'menuToggle' })
@@ -85,7 +84,7 @@ const DefaultLayout = props => {
             <BackTop />
             <AppAside menuToggle={state.menuToggle} menu={menu} />
             <Layout style={{ marginLeft: state.menuToggle ? '80px' : '200px', minHeight: '100vh' }}>
-                <AppHeader menuToggle={state.menuToggle} menuClick={menuClick} avatar={avatar} loginOut={loginOut} />
+                <AppHeader menuToggle={state.menuToggle} menuClick={menuClick} loginOut={loginOut} />
                 <Content className='content'>
                     <Switch>
                         {routes.map(item => {
@@ -94,16 +93,7 @@ const DefaultLayout = props => {
                                     key={item.path}
                                     path={item.path}
                                     exact={item.exact}
-                                    render={props =>
-                                        !auth ? (
-                                            <item.component {...props} />
-                                        ) : item.auth && item.auth.indexOf(auth) !== -1 ? (
-                                            <item.component {...props} />
-                                        ) : (
-                                            // 这里也可以跳转到 403 页面
-                                            <Redirect to='/404' {...props} />
-                                        )
-                                    }></Route>
+                                    render={props => <item.component {...props} />}></Route>
                             )
                         })}
                         <Redirect to='/404' />
