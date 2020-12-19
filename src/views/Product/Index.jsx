@@ -25,18 +25,6 @@ const Product = () => {
                 }
             })
             .catch(err => {})
-    }, [])
-
-    useEffect(() => {
-        axios
-            .post(API.PRODUCT.READ, { beginPage: currentPage, pageSize: 10 })
-            .then(res => {
-                if (res.code === SUCCESS) {
-                    setProducts(res.data.res)
-                    setTotal(res.data.total * 10)
-                }
-            })
-            .catch(err => {})
     }, [currentPage])
 
     return (

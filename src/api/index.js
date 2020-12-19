@@ -1,9 +1,8 @@
 import axios from 'axios'
+import { QUERY_TYPE } from '../constants'
 
 // 这里取决于登录的时候将 token 存储在哪里
 const mtokenId = localStorage.getItem('mtokenId')
-
-const isDev = process.env.NODE_ENV === 'development'
 
 const instance = axios.create({
     timeout: 5000,
@@ -18,7 +17,7 @@ instance.interceptors.request.use(
     config => {
         // 将 token 添加到请求头
         const data = config.data
-        config.data = { mtokenId: mtokenId, ...data }
+        config.data = { mtokenId: mtokenId, queryType: QUERY_TYPE, ...data }
         return config
     },
     error => {
