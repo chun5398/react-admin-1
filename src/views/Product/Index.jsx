@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
-import { Layout, Divider, Table, Button } from 'antd'
+import { Layout, Divider, Table, Button, Popconfirm, message, Icon } from 'antd'
 
 import axios from '../../api/index'
 import { API } from '../../api/config'
@@ -27,13 +27,44 @@ const Product = () => {
             .catch(err => {})
     }, [currentPage])
 
+    const handleDelete = id => {
+        setLoading(true)
+        axios
+            .post(API.PRODUCT.DELETE, { id })
+            .then(res => {
+                res.code === SUCCESS && setLoading(false) && message.success('删除成功')
+            })
+            .catch(err => {
+                message.error(err.message)
+            })
+    }
+
+    const handleRefresh = () => {
+        setLoading(true)
+        axios
+            .post(API.PRODUCT.READ, { beginPage: currentPage, pageSize: 10 })
+            .then(res => {
+                setLoading(false)
+                if (res.code === SUCCESS) {
+                    setProducts(res.data.res)
+                    setTotal(res.data.total * 10)
+                }
+            })
+            .catch(err => {})
+    }
+
     return (
         <Layout className={'button animated fadeIn'}>
             <div>
                 <CustomBreadcrumb arr={['产品管理']}></CustomBreadcrumb>
             </div>
             <div className={'base-style'}>
-                <Button type={'primary'}>新增产品</Button>
+                <Button type={'primary'} className={'mr15'}>
+                    新增产品
+                </Button>
+                <Button type={'primary'} icon={'reload'} onClick={() => handleRefresh()}>
+                    刷新
+                </Button>
                 <Divider />
                 <Table
                     loading={loading}
@@ -44,12 +75,13 @@ const Product = () => {
                         total: total,
                         current: currentPage,
                         onChange: (page, pageSize) => {
+                            setLoading(true)
                             setCurrentPage(page)
                         }
                     }}
                     expandedRowRender={record => <p>{record.prodDesc}</p>}>
                     <Column title={'ID'} dataIndex={'id'} />
-                    <Column title={'名称'} dataIndex={'prodName'} />
+                    <Column title={'名称'} dataIndex={'prodName'} width={'280px'} />
                     <Column
                         title={'图片'}
                         dataIndex={'prodImgUrl'}
@@ -59,7 +91,21 @@ const Product = () => {
                     />
                     <Column title={'价格'} dataIndex={'prodPrice'} />
                     <Column title={'时长'} dataIndex={'timeService'} render={record => <span>{record} 分钟</span>} />
-                    <Column title={'操作'} dataIndex={''} render={() => <a>删除</a>} />
+                    <Column
+                        title={'操作'}
+                        dataIndex={''}
+                        render={record => (
+                            <Fragment>
+                                <Popconfirm
+                                    title={`确定删除 ${record.prodName} ?`}
+                                    onConfirm={() => handleDelete(record.id)}>
+                                    <a>删除</a>
+                                </Popconfirm>
+                                <Divider type={'vertical'} />
+                                <a>编辑</a>
+                            </Fragment>
+                        )}
+                    />
                 </Table>
             </div>
         </Layout>
