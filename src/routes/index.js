@@ -28,12 +28,14 @@ const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Ind
 
 // 产品管理
 const Product = loadable(() => import(/* webpackChunkName: 'list' */ '@/views/Product/Index'))
+const Detail = loadable(() => import(/* webpackChunkName: 'list' */ '@/views/Product/Detail'))
 
 const routes = [
     { path: '/index', exact: true, name: '门店', component: Index },
-    { path: '/product', exact: false, name: '产品', component: Product },
-    { path: '/worksheet', exact: false, name: '工作表', component: null },
-    { path: '/reservation', exact: false, name: '预约', component: null }
+    { path: '/product', exact: true, name: '产品', component: Product },
+    { path: '/product/:id', exact: true, name: '产品', component: Detail },
+    { path: '/worksheet', exact: true, name: '工作表', component: null },
+    { path: '/reservation', exact: true, name: '预约', component: null }
 ]
 
 // { path: '/nav/dropdown', exact: false, name: '下拉菜单', component: DropdownView },

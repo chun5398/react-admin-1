@@ -1,18 +1,24 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, Fragment, memo } from 'react'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
-import { Layout, Divider, Table, Button, Popconfirm, message, Icon } from 'antd'
+import { Layout, Divider, Table, Button, Popconfirm, message } from 'antd'
 
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import { SUCCESS } from '../../constants'
+import { useHistory } from 'react-router-dom'
 
 const { Column } = Table
 
-const Product = () => {
+const Product = props => {
     const [products, setProducts] = useState([])
     const [currentPage, setCurrentPage] = useState(1)
     const [total, setTotal] = useState(0)
     const [loading, setLoading] = useState(true)
+    const history = useHistory()
+
+    useEffect(() => {
+        localStorage.removeItem('editProduct')
+    })
 
     useEffect(() => {
         axios
@@ -53,13 +59,22 @@ const Product = () => {
             .catch(err => {})
     }
 
+    const handleEdit = record => {
+        history.push(`/product/${record.id}`)
+        localStorage.setItem('editProduct', JSON.stringify(record))
+    }
+
+    const handleAdd = () => {
+        history.push(`/product/-1`)
+    }
+
     return (
         <Layout className={'button animated fadeIn'}>
             <div>
                 <CustomBreadcrumb arr={['产品管理']}></CustomBreadcrumb>
             </div>
             <div className={'base-style'}>
-                <Button type={'primary'} className={'mr15'}>
+                <Button type={'primary'} className={'mr15'} onClick={() => handleAdd()}>
                     新增产品
                 </Button>
                 <Button type={'primary'} icon={'reload'} onClick={() => handleRefresh()}>
@@ -86,7 +101,7 @@ const Product = () => {
                         title={'图片'}
                         dataIndex={'prodImgUrl'}
                         render={(text, record) => (
-                            <img src={record.prodImgUrl} style={{ width: '100px', height: '50px' }} />
+                            <img src={record.prodImgUrl} style={{ width: '100px', height: '50px' }} alt={'产品图片'} />
                         )}
                     />
                     <Column title={'价格'} dataIndex={'prodPrice'} />
@@ -98,11 +113,11 @@ const Product = () => {
                             <Fragment>
                                 <Popconfirm
                                     title={`确定删除 ${record.prodName} ?`}
-                                    onConfirm={() => handleDelete(record.id)}>
+                                    onConfirm={() => handleDelete(record)}>
                                     <a>删除</a>
                                 </Popconfirm>
                                 <Divider type={'vertical'} />
-                                <a>编辑</a>
+                                <a onClick={() => handleEdit(record)}>编辑</a>
                             </Fragment>
                         )}
                     />
@@ -112,4 +127,6 @@ const Product = () => {
     )
 }
 
-export default Product
+const ProductScreen = memo(Product)
+
+export default ProductScreen
