@@ -1,7 +1,5 @@
 import loadable from '@/utils/loadable'
 
-const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Index'))
-
 // 导航
 // const DropdownView = loadable(() => import(/* webpackChunkName: 'dropdown' */ '@/views/NavView/Dropdown'))
 // const MenuView = loadable(() => import(/* webpackChunkName: 'menu' */ '@/views/NavView/Menu'))
@@ -26,16 +24,22 @@ const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Ind
 // const Three = loadable(() => import(/* webpackChunkName: 'three' */ '@/views/TestView'))
 // const About = loadable(() => import(/* webpackChunkName: 'about' */ '@/views/About'))
 
+// 门店管理
+const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Index/Store'))
 // 产品管理
 const Product = loadable(() => import(/* webpackChunkName: 'list' */ '@/views/Product/Index'))
 const Detail = loadable(() => import(/* webpackChunkName: 'list' */ '@/views/Product/Detail'))
+// 工作表管理
+const WorkSheet = loadable(() => import(/* webpackChunkName: 'list' */ '@/views/WorkSheet/Index'))
+// 预约管理
+const Reservation = loadable(() => import(/* webpackChunkName: 'list' */ '@/views/Reservation/Index'))
 
 const routes = [
     { path: '/index', exact: true, name: '门店', component: Index },
     { path: '/product', exact: true, name: '产品', component: Product },
     { path: '/product/:id', exact: true, name: '产品', component: Detail },
-    { path: '/worksheet', exact: true, name: '工作表', component: null },
-    { path: '/reservation', exact: true, name: '预约', component: null }
+    { path: '/worksheet', exact: true, name: '工作表', component: WorkSheet },
+    { path: '/reservation', exact: true, name: '预约', component: Reservation }
 ]
 
 // { path: '/nav/dropdown', exact: false, name: '下拉菜单', component: DropdownView },

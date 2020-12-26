@@ -11,18 +11,13 @@ const menu = [
     },
     {
         title: '工作表管理',
-        key: '/nav',
+        key: '/worksheet',
         icon: 'bulb'
     },
     {
         title: '预约管理',
-        key: '/form',
+        key: '/reservation',
         icon: 'form'
-    },
-    {
-        title: '关于',
-        key: '/about',
-        icon: 'user'
     }
 ]
 

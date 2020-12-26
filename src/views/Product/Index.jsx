@@ -10,11 +10,12 @@ import { useHistory } from 'react-router-dom'
 const { Column } = Table
 
 const Product = props => {
-    const [products, setProducts] = useState([])
-    const [currentPage, setCurrentPage] = useState(1)
-    const [total, setTotal] = useState(0)
-    const [loading, setLoading] = useState(true)
     const history = useHistory()
+
+    const [total, setTotal] = useState(0)
+    const [products, setProducts] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [currentPage, setCurrentPage] = useState(1)
 
     useEffect(() => {
         localStorage.removeItem('editProduct')
@@ -74,10 +75,10 @@ const Product = props => {
                 <CustomBreadcrumb arr={['产品管理']}></CustomBreadcrumb>
             </div>
             <div className={'base-style'}>
-                <Button type={'primary'} className={'mr15'} onClick={() => handleAdd()}>
+                <Button type={'primary'} className={'mr15'} onClick={handleAdd}>
                     新增产品
                 </Button>
-                <Button type={'primary'} icon={'reload'} onClick={() => handleRefresh()}>
+                <Button type={'primary'} icon={'reload'} onClick={handleRefresh}>
                     刷新
                 </Button>
                 <Divider />

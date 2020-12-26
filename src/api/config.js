@@ -46,11 +46,43 @@ export const API = {
     /**
      * 门店信息
      */
-    STORE: {},
+    STORE: {
+        /**
+         * 添加门店信息
+         */
+        CREATE: '/store/sys/add',
+        /**
+         * 获取门店信息
+         */
+        READ: '/store/getStoreInfo',
+        /**
+         * 更新门店信息
+         */
+        UPDATE: '/store/sys/update'
+    },
     /**
      * 预约管理
      */
-    RESERVATION: {}
+    RESERVATION: {
+        /**
+         * 查询预约
+         */
+        READ: '/book/sys/queryBookRecord',
+        /**
+         * 修改预约状态
+         */
+        UPDATE: '/book/markBookFinish'
+    },
+    REFUND: {
+        /**
+         * 处理退款申请
+         */
+        UPDATE: '/pay/sys/refund'
+    },
+    /**
+     * 文件上传
+     */
+    UPLOAD: '/fs/upload'
 }
 
 export const URLAPI = ''

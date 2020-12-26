@@ -3,16 +3,19 @@ import axios from '../../api/index'
 import { API } from '../../api/config'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import { Layout, Row, Col, Form, Input, Button, Upload, Icon } from 'antd'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 
 const FormItem = Form.Item
 const TextArea = Input.TextArea
 
 const Detail = props => {
     const params = useParams()
+    const history = useHistory()
 
     const [id, setId] = useState(-1)
     const [product, setProduct] = useState(null)
+    const [uploadLoading, setUploadLoading] = useState(false)
+    const [uploadImage, setUploadImage] = useState(null)
 
     useEffect(() => {
         const id = params.id ? parseInt(params.id) : -1
@@ -26,16 +29,6 @@ const Detail = props => {
         return value
     }
 
-    const setImages = () => {
-        if (product) {
-            let uploaded = { urL: product.prodImgUrl, uid: product.prodImgId, name: product.prodName, status: 'done' }
-            const images = [uploaded]
-            return images
-        } else {
-            return []
-        }
-    }
-
     const handleSubmit = event => {
         event.preventDefault()
         props.form.validateFieldsAndScroll((err, fieldsValue) => {
@@ -43,6 +36,26 @@ const Detail = props => {
             const values = { ...fieldsValue }
             console.log(values)
         })
+    }
+
+    const handleBeforeUpload = file => {
+        setUploadImage(file)
+        return false
+    }
+
+    const handleUpload = () => {
+        if (uploadImage) {
+            axios
+                .post(API.UPLOAD, { file: uploadImage })
+                .then(res => {
+                    console.log(res)
+                })
+                .catch(err => {})
+        }
+    }
+
+    const handleHistoryBack = () => {
+        history.replace('/product')
     }
 
     const formItemLayout = {
@@ -70,6 +83,13 @@ const Detail = props => {
     }
 
     const { getFieldDecorator, getFieldValue } = props.form
+
+    const UploadButton = (
+        <div>
+            <Icon type={uploadLoading ? 'loading' : 'plus'} />
+            <div className={'antd-upload-text'}>点击上传</div>
+        </div>
+    )
 
     return (
         <Layout>
@@ -105,11 +125,26 @@ const Detail = props => {
                                 })(<Input placeholder='请输入产品金额' type={'number'} />)}
                             </FormItem>
                             <FormItem label={'图片'}>
-                                <Upload fileList={setImages()} action={'/yuanle/fs/upload'}>
-                                    <Button icon={'upload'}>上传图片</Button>
+                                <Upload name={'file'} beforeUpload={file => handleBeforeUpload(file)}>
+                                    {product && product.prodImgUrl ? (
+                                        <img src={product.prodImgUrl} style={{ width: 200 }} />
+                                    ) : (
+                                        UploadButton
+                                    )}
                                 </Upload>
+                                <Button
+                                    type={'primary'}
+                                    onClick={handleUpload}
+                                    disabled={!uploadImage}
+                                    loading={uploadLoading}
+                                    style={{ marginTop: 16 }}>
+                                    上传图片
+                                </Button>
                             </FormItem>
                             <FormItem {...tailFormItemLayout}>
+                                <Button type={'primary'} style={{ marginRight: 16 }} onClick={handleHistoryBack}>
+                                    取消
+                                </Button>
                                 <Button type={'primary'} htmlType={'submit'}>
                                     {id === -1 ? '新增产品' : '提交修改'}
                                 </Button>
