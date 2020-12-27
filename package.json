@@ -9,6 +9,7 @@
         "braft-editor": "^2.3.8",
         "echarts": "^4.4.0",
         "eslint-plugin-react-hooks": "^2.3.0",
+        "moment": "^2.29.1",
         "nprogress": "^0.2.0",
         "react": "^16.10.1",
         "react-dom": "^16.10.1",
