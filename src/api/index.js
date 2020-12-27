@@ -11,6 +11,7 @@ const instance = axios.create({
 
 // 设置post请求头
 instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+// instance.defaults.headers.post['Content-Type'] = 'application/json'
 
 // 添加请求拦截器
 instance.interceptors.request.use(
@@ -18,6 +19,9 @@ instance.interceptors.request.use(
         // 将 token 添加到请求头
         const data = config.data
         config.data = { mtokenId: mtokenId, queryType: QUERY_TYPE, ...data }
+        // if('file' in data) {
+        //     config.headers.post['Content-Type'] = 'multipart/form-data'
+        // }
         return config
     },
     error => {
