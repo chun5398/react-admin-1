@@ -5,7 +5,6 @@ import '@/style/view-style/index.scss'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import { SUCCESS } from '../../constants'
-import request from 'axios'
 
 const FormItem = Form.Item
 
@@ -70,20 +69,18 @@ const Store = props => {
         })
     }
 
-    const handleChangeImage = event => {
-        setBanner(banner.filter(item => item.uid !== event.file.uid))
+    const handleRemove = file => {
+        const removed = banner.filter(item => item.uid !== file.uid)
+        setBanner(removed)
     }
 
-    const handleBeforeUpload = file => {
-        setUploadImage(file)
-        return false
-    }
-
-    const handleUpload = () => {
+    const handleUpload = options => {
+        const file = new FormData()
+        file.append('file', options.file)
         axios
             .post(
                 API.UPLOAD,
-                { file: uploadImage },
+                { file: file.getAll('file') },
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data'
@@ -91,7 +88,12 @@ const Store = props => {
                 }
             )
             .then(res => {
-                res.code === SUCCESS && setUploadImage(null)
+                const item = {
+                    uid: res.data.id,
+                    name: banner.length,
+                    url: res.data.url
+                }
+                res.code === SUCCESS && setBanner(banner.push(item))
             })
     }
 
@@ -124,6 +126,13 @@ const Store = props => {
     }
 
     const { getFieldDecorator } = props.form
+
+    const UploadButton = (
+        <div>
+            <Icon type={'plus'} />
+            <div className='ant-upload-text'>上传图片</div>
+        </div>
+    )
 
     return (
         <Layout className='index animated fadeIn'>
@@ -165,22 +174,11 @@ const Store = props => {
                     <FormItem label={'首页轮播图'}>
                         <Upload
                             fileList={banner}
-                            beforeUpload={file => handleBeforeUpload(file)}
-                            onChange={e => handleChangeImage(e)}>
-                            {banner && banner.length >= 3 ? null : (
-                                <Button>
-                                    <Icon type={'upload'} />
-                                </Button>
-                            )}
+                            onRemove={handleRemove}
+                            listType={'picture-card'}
+                            customRequest={handleUpload}>
+                            {banner.length < 3 ? UploadButton : null}
                         </Upload>
-                        <Button
-                            type={'primary'}
-                            onClick={handleUpload}
-                            disabled={!uploadImage}
-                            loading={uploadLoading}
-                            style={{ marginTop: 16 }}>
-                            上传图片
-                        </Button>
                     </FormItem>
                     <FormItem {...tailFormItemLayout}>
                         <Button type={'primary'} htmlType={'submit'}>
