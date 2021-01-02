@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react'
-import { Layout, Table, Popconfirm, message } from 'antd'
+import { Layout, Table, Popconfirm, message, Button, Divider } from 'antd'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import '@/style/view-style/index.scss'
 import axios from '../../api/index'
@@ -15,12 +15,8 @@ const Reservation = () => {
     const [currentPage, setCurrentPage] = useState(1)
 
     useEffect(() => {
-        const param = {
-            beginPage: currentPage,
-            pageSize: 10
-        }
         axios
-            .post(API.RESERVATION.READ, param)
+            .post(API.RESERVATION.READ, { beginPage: currentPage, pageSize: 10 })
             .then(res => {
                 setLoading(false)
                 setTotal(res.data.total * 10)
@@ -59,12 +55,35 @@ const Reservation = () => {
             })
     }
 
+    const handleRefresh = () => {
+        setLoading(true)
+        axios
+            .post(API.RESERVATION.READ, { beginPage: currentPage, pageSize: 10 })
+            .then(res => {
+                setLoading(false)
+                setTotal(res.data.total * 10)
+                res.code === SUCCESS && setReservations(res.data.res)
+            })
+            .catch(err => {
+                message.error(err.message)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
+
     return (
         <Layout className='index animated fadeIn'>
             <div>
                 <CustomBreadcrumb arr={['预约管理']}></CustomBreadcrumb>
             </div>
             <div className={'base-style'}>
+                <div>
+                    <Button type={'primary'} icon={'reload'} onClick={handleRefresh}>
+                        刷新
+                    </Button>
+                    <Divider />
+                </div>
                 <Table
                     loading={loading}
                     dataSource={reservations}
