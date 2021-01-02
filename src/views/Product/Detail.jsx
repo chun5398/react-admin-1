@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from 'react'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
-import { Layout, Row, Col, Form, Input, Button, Upload, Icon } from 'antd'
+import { Layout, Row, Col, Form, Input, Button, Upload, Icon, message } from 'antd'
 import { useParams, useHistory } from 'react-router-dom'
 import { SUCCESS } from '../../constants'
 
@@ -37,9 +37,24 @@ const Detail = props => {
     const handleSubmit = event => {
         event.preventDefault()
         props.form.validateFieldsAndScroll((err, fieldsValue) => {
-            if (err) return
-            const values = { ...fieldsValue }
-            console.log(values)
+            if (err) {
+                return
+            }
+
+            const { prodImgUrl, ...rest } = product
+            const param = { ...rest, ...fieldsValue, prodImgId: produdctImage.uid }
+
+            const url = id === -1 ? API.PRODUCT.CREATE : API.PRODUCT.UPDATE
+
+            axios
+                .post(url, param)
+                .then(res => {
+                    res.code === SUCCESS && message.success('操作成功')
+                    res.code !== SUCCESS && message.error(res.message)
+                })
+                .catch(err => {
+                    message.error(err.message)
+                })
         })
     }
 
@@ -139,7 +154,13 @@ const Detail = props => {
                                 {getFieldDecorator('prodPrice', {
                                     initialValue: setValue('prodPrice'),
                                     rules: [{ required: true, message: '请输入产品金额' }]
-                                })(<Input placeholder='请输入产品金额' type={'number'} />)}
+                                })(<Input placeholder='请输入产品金额' type={'number'} suffix={'元'} />)}
+                            </FormItem>
+                            <FormItem label={'时长'}>
+                                {getFieldDecorator('timeService', {
+                                    initialValue: setValue('timeService'),
+                                    rules: [{ required: true, message: '请输入服务时长' }]
+                                })(<Input placeholder='请输入服务时长' type={'number'} suffix={'分钟'} />)}
                             </FormItem>
                             <FormItem label={'图片'}>
                                 <Upload
