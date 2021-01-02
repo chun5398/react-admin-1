@@ -51,13 +51,19 @@ const Product = props => {
         axios
             .post(API.PRODUCT.READ, { beginPage: currentPage, pageSize: 10 })
             .then(res => {
-                setLoading(false)
                 if (res.code === SUCCESS) {
                     setProducts(res.data.res)
                     setTotal(res.data.total * 10)
+                } else {
+                    message.error(res.message)
                 }
             })
-            .catch(err => {})
+            .catch(err => {
+                message.error(err.message)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }
 
     const handleEdit = record => {
@@ -113,6 +119,8 @@ const Product = props => {
                         render={record => (
                             <Fragment>
                                 <Popconfirm
+                                    cancelText={'取消'}
+                                    okText={'确定'}
                                     title={`确定删除 ${record.prodName} ?`}
                                     onConfirm={() => handleDelete(record)}>
                                     <a>删除</a>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
@@ -64,6 +64,7 @@ const Detail = props => {
     }
 
     const handleUpload = options => {
+        setUploadLoading(true)
         const file = new FormData()
         file.append('file', options.file)
         axios
@@ -77,12 +78,21 @@ const Detail = props => {
                 }
             )
             .then(res => {
-                const item = {
-                    uid: res.data.id,
-                    name: produdctImage.length,
-                    url: res.data.url
+                if (res.code === SUCCESS) {
+                    const item = {
+                        uid: res.data.id,
+                        name: produdctImage.length,
+                        url: res.data.url
+                    }
+                    setProdudctImage(produdctImage.push(item))
+                    message.success('图片上传成功')
                 }
-                res.code === SUCCESS && setProdudctImage(produdctImage.push(item))
+            })
+            .catch(err => {
+                message.error(err.message)
+            })
+            .finally(() => {
+                setUploadLoading(false)
             })
     }
 
@@ -114,7 +124,7 @@ const Detail = props => {
         }
     }
 
-    const { getFieldDecorator, getFieldValue } = props.form
+    const { getFieldDecorator } = props.form
 
     const UploadButton = (
         <div>

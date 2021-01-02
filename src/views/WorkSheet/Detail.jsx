@@ -4,7 +4,7 @@ import { API } from '../../api/config'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import { Layout, Row, Col, Form, Input, Button, message, TimePicker } from 'antd'
 import { useParams, useHistory } from 'react-router-dom'
-import moment, { max } from 'moment'
+import moment from 'moment'
 import { SUCCESS } from '../../constants'
 
 const FormItem = Form.Item
@@ -70,7 +70,7 @@ const Detail = props => {
         })
     }
 
-    const { getFieldDecorator, getFieldValue } = props.form
+    const { getFieldDecorator } = props.form
 
     const formItemLayout = {
         labelCol: {

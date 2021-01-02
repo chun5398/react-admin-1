@@ -70,5 +70,5 @@
         "prettier": "^1.18.2",
         "react-app-rewired": "^2.1.4"
     },
-    "proxy": "http://188.131.129.236"
+    "proxy": "https://api.yuanle1.cn"
 }

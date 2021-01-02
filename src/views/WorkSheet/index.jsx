@@ -1,6 +1,6 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState } from 'react'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
-import { Layout, Divider, Table, Button, Popconfirm, message } from 'antd'
+import { Layout, Divider, Table, Button, message } from 'antd'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import { SUCCESS } from '../../constants'
@@ -11,7 +11,7 @@ const { Column } = Table
 const WorkSheet = () => {
     const history = useHistory()
 
-    const [total, setTotal] = useState(0)
+    const [total, setTotal] = useState(1)
     const [workSheets, setWorkSheets] = useState([])
     const [loading, setLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
@@ -24,20 +24,43 @@ const WorkSheet = () => {
         axios
             .post(API.WORKSHEET.READ, { beginPage: currentPage, pageSize: 10 })
             .then(res => {
-                setLoading(false)
                 if (res.code === SUCCESS) {
                     setWorkSheets(res.data)
-                    setTotal(res.data.total * 10)
+                } else {
+                    message.error(res.message)
                 }
             })
-            .catch(err => {})
+            .catch(err => {
+                message.error(err.message)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }, [currentPage])
+
+    const handleRefresh = () => {
+        setLoading(true)
+        axios
+            .post(API.WORKSHEET.READ, { beginPage: currentPage, pageSize: 10 })
+            .then(res => {
+                if (res.code === SUCCESS) {
+                    setWorkSheets(res.data)
+                    // setTotal(res.data.total * 10)
+                } else {
+                    message.error(res.message)
+                }
+            })
+            .catch(err => {
+                message.error(err.message)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
 
     const handleAdd = () => {
         history.push(`/worksheet/-1`)
     }
-
-    const handleRefresh = () => {}
 
     const handleEdit = record => {
         history.push(`/worksheet/${record.id}`)

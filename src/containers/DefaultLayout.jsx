@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useState, useReducer } from 'react'
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import { Layout, BackTop, message } from 'antd'
 import routes from '../routes/index'

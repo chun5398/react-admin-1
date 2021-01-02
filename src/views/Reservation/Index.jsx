@@ -1,17 +1,14 @@
 import React, { useEffect, useState, Fragment } from 'react'
-import { Layout, Button, Table, Popconfirm, Divider, message } from 'antd'
+import { Layout, Table, Popconfirm, message } from 'antd'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import '@/style/view-style/index.scss'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import { SUCCESS } from '../../constants'
-import { useHistory } from 'react-router-dom'
 
 const { Column } = Table
 
 const Reservation = () => {
-    const history = useHistory()
-
     const [total, setTotal] = useState(0)
     const [reservations, setReservations] = useState([])
     const [loading, setLoading] = useState(true)
@@ -26,6 +23,7 @@ const Reservation = () => {
             .post(API.RESERVATION.READ, param)
             .then(res => {
                 setLoading(false)
+                setTotal(res.data.total * 10)
                 res.code === SUCCESS && setReservations(res.data.res)
             })
             .catch(err => {
@@ -67,7 +65,19 @@ const Reservation = () => {
                 <CustomBreadcrumb arr={['预约管理']}></CustomBreadcrumb>
             </div>
             <div className={'base-style'}>
-                <Table loading={loading} dataSource={reservations} rowKey={record => record.id}>
+                <Table
+                    loading={loading}
+                    dataSource={reservations}
+                    rowKey={record => record.id}
+                    pagination={{
+                        pageSize: 10,
+                        total: total,
+                        current: currentPage,
+                        onChange: (page, pageSize) => {
+                            setLoading(true)
+                            setCurrentPage(page)
+                        }
+                    }}>
                     <Column title={'预约服务'} dataIndex={'prodName'} />
                     <Column title={'预约日期'} dataIndex={'bookDate'} />
                     <Column title={'开始时间'} dataIndex={'startTime'} />
@@ -82,6 +92,8 @@ const Reservation = () => {
                                 {record.status === 6 ? (
                                     <Popconfirm
                                         title={`确定退款 ${record.prodName} ?`}
+                                        cancelText={'取消'}
+                                        okText={'确定'}
                                         onConfirm={handleRefund(record)}>
                                         <a>退款</a>
                                     </Popconfirm>
@@ -89,6 +101,8 @@ const Reservation = () => {
                                 {record.status === 1 ? (
                                     <Popconfirm
                                         title={`确定完成 ${record.prodName}`}
+                                        cancelText={'取消'}
+                                        okText={'确定'}
                                         onConfirm={() => handleTurnOff(record)}>
                                         <a>完成服务</a>
                                     </Popconfirm>
