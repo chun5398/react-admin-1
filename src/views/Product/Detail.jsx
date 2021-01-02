@@ -4,6 +4,7 @@ import { API } from '../../api/config'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import { Layout, Row, Col, Form, Input, Button, Upload, Icon } from 'antd'
 import { useParams, useHistory } from 'react-router-dom'
+import { SUCCESS } from '../../constants'
 
 const FormItem = Form.Item
 const TextArea = Input.TextArea
@@ -15,11 +16,15 @@ const Detail = props => {
     const [id, setId] = useState(-1)
     const [product, setProduct] = useState(null)
     const [uploadLoading, setUploadLoading] = useState(false)
-    const [uploadImage, setUploadImage] = useState(null)
+    const [produdctImage, setProdudctImage] = useState([])
 
     useEffect(() => {
         const id = params.id ? parseInt(params.id) : -1
-        id !== -1 && setProduct(JSON.parse(localStorage.getItem('editProduct')))
+        if (id !== -1) {
+            let product = JSON.parse(localStorage.getItem('editProduct'))
+            setProduct(product)
+            setProdudctImage([{ uid: product.prodImgId, url: product.prodImgUrl }])
+        }
         id === -1 && localStorage.removeItem('editProduct')
         setId(id)
     }, [])
@@ -38,20 +43,32 @@ const Detail = props => {
         })
     }
 
-    const handleBeforeUpload = file => {
-        setUploadImage(file)
-        return false
+    const handleRemove = file => {
+        const removed = produdctImage.filter(item => item.uid !== file.uid)
+        setProdudctImage(removed)
     }
 
-    const handleUpload = () => {
-        if (uploadImage) {
-            axios
-                .post(API.UPLOAD, { file: uploadImage })
-                .then(res => {
-                    console.log(res)
-                })
-                .catch(err => {})
-        }
+    const handleUpload = options => {
+        const file = new FormData()
+        file.append('file', options.file)
+        axios
+            .post(
+                API.UPLOAD,
+                { file: file.getAll('file')[0] },
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            )
+            .then(res => {
+                const item = {
+                    uid: res.data.id,
+                    name: produdctImage.length,
+                    url: res.data.url
+                }
+                res.code === SUCCESS && setProdudctImage(produdctImage.push(item))
+            })
     }
 
     const handleHistoryBack = () => {
@@ -125,7 +142,14 @@ const Detail = props => {
                                 })(<Input placeholder='请输入产品金额' type={'number'} />)}
                             </FormItem>
                             <FormItem label={'图片'}>
-                                <Upload name={'file'} beforeUpload={file => handleBeforeUpload(file)}>
+                                <Upload
+                                    fileList={produdctImage}
+                                    onRemove={handleRemove}
+                                    listType={'picture-card'}
+                                    customRequest={handleUpload}>
+                                    {produdctImage.length < 1 ? UploadButton : null}
+                                </Upload>
+                                {/* <Upload name={'file'} beforeUpload={file => handleBeforeUpload(file)}>
                                     {product && product.prodImgUrl ? (
                                         <img src={product.prodImgUrl} style={{ width: 200 }} />
                                     ) : (
@@ -139,7 +163,7 @@ const Detail = props => {
                                     loading={uploadLoading}
                                     style={{ marginTop: 16 }}>
                                     上传图片
-                                </Button>
+                                </Button> */}
                             </FormItem>
                             <FormItem {...tailFormItemLayout}>
                                 <Button type={'primary'} style={{ marginRight: 16 }} onClick={handleHistoryBack}>

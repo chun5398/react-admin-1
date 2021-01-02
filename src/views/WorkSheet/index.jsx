@@ -33,7 +33,9 @@ const WorkSheet = () => {
             .catch(err => {})
     }, [currentPage])
 
-    const handleAdd = () => {}
+    const handleAdd = () => {
+        history.push(`/worksheet/-1`)
+    }
 
     const handleRefresh = () => {}
 

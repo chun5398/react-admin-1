@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
-import { Layout, Row, Col, Form, Input, Button, DatePicker, TimePicker } from 'antd'
+import { Layout, Row, Col, Form, Input, Button, message, TimePicker } from 'antd'
 import { useParams, useHistory } from 'react-router-dom'
-import moment from 'moment'
+import moment, { max } from 'moment'
+import { SUCCESS } from '../../constants'
 
 const FormItem = Form.Item
 
@@ -32,11 +33,41 @@ const Detail = props => {
     }, [])
 
     const handleHistoryBack = () => {
-        history.replace('/product')
+        history.replace('/worksheet')
+        localStorage.removeItem('editWorkSheet')
     }
 
     const handleSubmit = event => {
         event.preventDefault()
+
+        props.form.validateFieldsAndScroll((err, fieldsValue) => {
+            if (err) return
+            const { maxOrder } = fieldsValue
+            const startTime = fieldsValue.startTime.format('HH:mm')
+            const endTime = fieldsValue.endTime.format('HH:mm')
+
+            if (id !== -1) {
+                axios
+                    .post(API.WORKSHEET.UPDATE, { id, startTime, endTime, maxOrder: parseInt(maxOrder) })
+                    .then(res => {
+                        res.code === SUCCESS && message.success('操作成功')
+                        res.code !== SUCCESS && message.error(res.message)
+                    })
+                    .catch(err => {
+                        message.error(err.message)
+                    })
+            } else {
+                axios
+                    .post(API.WORKSHEET.CREATE, { startTime, endTime, maxOrder: parseInt(maxOrder) })
+                    .then(res => {
+                        res.code === SUCCESS && message.success('操作成功')
+                        res.code !== SUCCESS && message.error(res.message)
+                    })
+                    .catch(err => {
+                        message.error(err.message)
+                    })
+            }
+        })
     }
 
     const { getFieldDecorator, getFieldValue } = props.form
@@ -73,32 +104,30 @@ const Detail = props => {
                 <Col>
                     <div className={'base-style'}>
                         <Form {...formItemLayout} onSubmit={handleSubmit}>
-                            <FormItem label={'工作表ID'}>
-                                <Input placeholder='工作表ID' disabled={true} type={'number'} value={id} />
-                            </FormItem>
                             <FormItem label={'起始时间'}>
-                                <TimePicker
-                                    placeholder='请输入起始时间'
-                                    format={'HH:mm'}
-                                    value={moment(startTime, 'HH:mm')}
-                                />
+                                {getFieldDecorator('startTime', {
+                                    initialValue: moment(startTime, 'HH:mm'),
+                                    rules: [{ required: true }]
+                                })(<TimePicker placeholder='请输入起始时间' format={'HH:mm'} />)}
                             </FormItem>
                             <FormItem label={'结束时间'}>
-                                <TimePicker
-                                    placeholder='请输入起始时间'
-                                    format={'HH:mm'}
-                                    value={moment(endTime, 'HH:mm')}
-                                />
+                                {getFieldDecorator('endTime', {
+                                    initialValue: moment(endTime, 'HH:mm'),
+                                    rules: [{ required: true }]
+                                })(<TimePicker placeholder='请输入起始时间' format={'HH:mm'} />)}
                             </FormItem>
                             <FormItem label={'最大预约数'}>
-                                <Input placeholder='请输入最大预约数' type={'number'} value={maxOrder} />
+                                {getFieldDecorator('maxOrder', {
+                                    initialValue: maxOrder,
+                                    rules: [{ required: true }]
+                                })(<Input placeholder='请输入最大预约数' type={'number'} />)}
                             </FormItem>
                             <FormItem {...tailFormItemLayout}>
                                 <Button type={'primary'} style={{ marginRight: 16 }} onClick={handleHistoryBack}>
                                     取消
                                 </Button>
                                 <Button type={'primary'} htmlType={'submit'}>
-                                    {id === -1 ? '新增' : '提交修改'}
+                                    {id === -1 ? '新增工作表' : '提交修改'}
                                 </Button>
                             </FormItem>
                         </Form>
