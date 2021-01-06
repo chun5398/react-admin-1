@@ -27,9 +27,13 @@ const Login = props => {
                             localStorage.setItem('mtokenId', mtokenId)
                             message.success('登录成功!')
                             props.history.push('/')
+                        } else {
+                            message.error(res.message)
                         }
                     })
-                    .catch(err => {})
+                    .catch(err => {
+                        message.error(err.message)
+                    })
 
                 // 这里可以做权限校验 模拟接口返回用户权限标识
                 // switch (values.username) {

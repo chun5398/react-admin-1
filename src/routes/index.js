@@ -6,7 +6,7 @@ const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Ind
 const Product = loadable(() => import(/* webpackChunkName: 'product' */ '@/views/Product/Index'))
 const Detail = loadable(() => import(/* webpackChunkName: 'productForm' */ '@/views/Product/Detail'))
 // 工作表管理
-const WorkSheet = loadable(() => import(/* webpackChunkName: 'worksheet' */ '@/views/WorkSheet/Index'))
+const WorkSheet = loadable(() => import(/* webpackChunkName: 'worksheet' */ '@/views/WorkSheet/index'))
 // 工作表管理
 const WorkSheetForm = loadable(() => import(/* webpackChunkName: 'worksheetForm' */ '@/views/WorkSheet/Detail'))
 // 预约管理

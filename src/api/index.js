@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { QUERY_TYPE } from '../constants'
 
-// 这里取决于登录的时候将 token 存储在哪里
-const mtokenId = localStorage.getItem('mtokenId')
+// 这里取决于登录的时候将 token 存储在哪
 
 const instance = axios.create({
     timeout: 5000,
@@ -18,10 +17,9 @@ instance.interceptors.request.use(
     config => {
         // 将 token 添加到请求头
         const data = config.data
+        const mtokenId = localStorage.getItem('mtokenId')
+        console.log(mtokenId)
         config.data = { mtokenId: mtokenId, queryType: QUERY_TYPE, ...data }
-        // if('file' in data) {
-        //     config.headers.post['Content-Type'] = 'multipart/form-data'
-        // }
         return config
     },
     error => {
