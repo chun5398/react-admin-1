@@ -12,7 +12,7 @@ const menu = [
     {
         title: '工作表管理',
         key: '/worksheet',
-        icon: 'bulb'
+        icon: 'table'
     },
     {
         title: '预约管理',
@@ -22,7 +22,7 @@ const menu = [
     {
         title: '用户管理',
         key: '/user',
-        icon: 'form'
+        icon: 'user'
     }
 ]
 
