@@ -13,6 +13,8 @@ const WorkSheetForm = loadable(() => import(/* webpackChunkName: 'worksheetForm'
 const Reservation = loadable(() => import(/* webpackChunkName: 'reservation' */ '@/views/Reservation/Index'))
 // 用户管理
 const User = loadable(() => import(/* webpackChunkName: 'user' */ '@/views/User/User'))
+// 用户编辑
+const UserEdit = loadable(() => import(/* webpackChunkName: 'userEdit' */ '@/views/User/UserEdit'))
 
 const routes = [
     { path: '/index', exact: true, name: '门店', component: Index },
@@ -21,7 +23,8 @@ const routes = [
     { path: '/worksheet', exact: true, name: '工作表', component: WorkSheet },
     { path: '/worksheet/:id', exact: true, name: '工作表详情', component: WorkSheetForm },
     { path: '/reservation', exact: true, name: '预约', component: Reservation },
-    { path: '/user', exact: true, name: '用户管理', component: User }
+    { path: '/user', exact: true, name: '用户管理', component: User },
+    { path: '/user/:id', exact: true, name: '用户详情', component: UserEdit }
 ]
 
 export default routes
