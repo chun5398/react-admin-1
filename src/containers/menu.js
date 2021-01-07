@@ -18,6 +18,11 @@ const menu = [
         title: '预约管理',
         key: '/reservation',
         icon: 'form'
+    },
+    {
+        title: '用户管理',
+        key: '/user',
+        icon: 'form'
     }
 ]
 

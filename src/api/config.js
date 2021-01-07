@@ -82,7 +82,20 @@ export const API = {
     /**
      * 文件上传
      */
-    UPLOAD: '/fs/upload'
+    UPLOAD: '/fs/upload',
+    /**
+     * 用户
+     */
+    USER: {
+        /**
+         * 用户列表
+         */
+        READ: '/user/sys/getUserList',
+        /**
+         * 更新用户信息
+         */
+        UPDATE: '/user/sys/updateUser'
+    }
 }
 
 export const URLAPI = ''
