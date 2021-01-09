@@ -65,6 +65,7 @@ const Detail = props => {
 
     const handleUpload = options => {
         setUploadLoading(true)
+        const timestamp = +new Date()
         const file = new FormData()
         file.append('file', options.file)
         axios
@@ -73,7 +74,7 @@ const Detail = props => {
                 { file: file.getAll('file')[0] },
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': `multipart/form-data;boundary=${timestamp}`
                     }
                 }
             )

@@ -76,6 +76,7 @@ const Store = props => {
 
     const handleUpload = options => {
         const file = new FormData()
+        const timestamp = +new Date()
         file.append('file', options.file)
         axios
             .post(
@@ -83,17 +84,21 @@ const Store = props => {
                 { file: file.getAll('file') },
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': `multipart/form-data;boundary=${timestamp}`
                     }
                 }
             )
             .then(res => {
-                const item = {
-                    uid: res.data.id,
-                    name: banner.length,
-                    url: res.data.url
+                if (res.code === SUCCESS) {
+                    const item = {
+                        uid: res.data.id,
+                        name: banner.length,
+                        url: res.data.url
+                    }
+                    setBanner(banner.push(item))
+                } else {
+                    message.error(res.message)
                 }
-                res.code === SUCCESS && setBanner(banner.push(item))
             })
     }
 

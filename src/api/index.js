@@ -18,7 +18,6 @@ instance.interceptors.request.use(
         // 将 token 添加到请求头
         const data = config.data
         const mtokenId = localStorage.getItem('mtokenId')
-        console.log(mtokenId)
         config.data = { mtokenId: mtokenId, queryType: QUERY_TYPE, ...data }
         return config
     },
