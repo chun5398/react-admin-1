@@ -71,7 +71,7 @@ const Detail = props => {
         axios
             .post(
                 API.UPLOAD,
-                { file: file.getAll('file')[0] },
+                { file: file.get('file') },
                 {
                     headers: {
                         'Content-Type': `multipart/form-data;boundary=${timestamp}`
