@@ -17,12 +17,12 @@ const User = loadable(() => import(/* webpackChunkName: 'user' */ '@/views/User/
 const UserEdit = loadable(() => import(/* webpackChunkName: 'userEdit' */ '@/views/User/UserEdit'))
 
 const routes = [
+    { path: '/reservation', exact: true, name: '预约', component: Reservation },
     { path: '/index', exact: true, name: '门店', component: Index },
     { path: '/product', exact: true, name: '产品', component: Product },
     { path: '/product/:id', exact: true, name: '产品', component: Detail },
     { path: '/worksheet', exact: true, name: '工作表', component: WorkSheet },
     { path: '/worksheet/:id', exact: true, name: '工作表详情', component: WorkSheetForm },
-    { path: '/reservation', exact: true, name: '预约', component: Reservation },
     { path: '/user', exact: true, name: '用户管理', component: User },
     { path: '/user/:id', exact: true, name: '用户详情', component: UserEdit }
 ]

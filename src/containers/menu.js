@@ -1,8 +1,8 @@
 const menu = [
     {
-        key: '/index',
-        title: '门店管理',
-        icon: 'home'
+        title: '预约管理',
+        key: '/reservation',
+        icon: 'form'
     },
     {
         title: '产品管理',
@@ -15,14 +15,14 @@ const menu = [
         icon: 'table'
     },
     {
-        title: '预约管理',
-        key: '/reservation',
-        icon: 'form'
-    },
-    {
         title: '用户管理',
         key: '/user',
         icon: 'user'
+    },
+    {
+        key: '/index',
+        title: '门店管理',
+        icon: 'home'
     }
 ]
 

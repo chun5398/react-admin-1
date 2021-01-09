@@ -1,30 +1,28 @@
 import React, { useEffect, useState, Fragment } from 'react'
-import { Layout, Table, Popconfirm, message, Button, Divider } from 'antd'
+import { Layout, Table, Popconfirm, message, Button, Divider, Input, DatePicker } from 'antd'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
 import '@/style/view-style/index.scss'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import { SUCCESS } from '../../constants'
+import moment from 'moment'
 
 const { Column } = Table
 
 const Reservation = () => {
+    const currentTime = new Date()
+    const format = 'YYYY-MM-DD'
+    const timeString = `${currentTime.getFullYear()}-${currentTime.getMonth()}-${currentTime.getDay()}`
+
     const [total, setTotal] = useState(0)
     const [reservations, setReservations] = useState([])
     const [loading, setLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
+    const [phone, setPhone] = useState('')
+    const [bookDate, setBookDate] = useState(null)
 
     useEffect(() => {
-        axios
-            .post(API.RESERVATION.READ, { beginPage: currentPage, pageSize: 10 })
-            .then(res => {
-                setLoading(false)
-                setTotal(res.data.total * 10)
-                res.code === SUCCESS && setReservations(res.data.res)
-            })
-            .catch(err => {
-                setLoading(false)
-            })
+        handleFilterQuery()
     }, [currentPage])
 
     const handleTurnOff = record => {
@@ -56,13 +54,40 @@ const Reservation = () => {
     }
 
     const handleRefresh = () => {
+        handleFilterQuery()
+    }
+
+    const handleSetPhone = e => {
+        setPhone(e.target.value)
+    }
+
+    const handleSetDate = (date, dateString) => {
+        setBookDate(moment(dateString, 'YYYY-MM-DD'))
+    }
+
+    const handleResetCondition = () => {
+        setPhone('')
+        setBookDate(null)
+    }
+
+    const handleFilterQuery = () => {
         setLoading(true)
+        const param = {
+            beginPage: currentPage,
+            pageSize: 10,
+            phone,
+            bookDate
+        }
         axios
-            .post(API.RESERVATION.READ, { beginPage: currentPage, pageSize: 10 })
+            .post(API.RESERVATION.READ, param)
             .then(res => {
-                setLoading(false)
-                setTotal(res.data.total * 10)
-                res.code === SUCCESS && setReservations(res.data.res)
+                if (res.code === SUCCESS) {
+                    setLoading(false)
+                    setTotal(res.data.total * 10)
+                    setReservations(res.data.res)
+                } else {
+                    message.error(res.message)
+                }
             })
             .catch(err => {
                 message.error(err.message)
@@ -79,6 +104,31 @@ const Reservation = () => {
             </div>
             <div className={'base-style'}>
                 <div>
+                    <DatePicker
+                        onChange={(date, dateString) => handleSetDate(date, dateString)}
+                        style={{ marginRight: '15px' }}
+                        value={bookDate}
+                    />
+                    <Input
+                        placeholder={'用户联系电话'}
+                        style={{ marginRight: '15px', width: '170px' }}
+                        value={phone}
+                        onChange={e => handleSetPhone(e)}
+                    />
+                    <Button
+                        type={'primary'}
+                        icon={'search'}
+                        onClick={handleFilterQuery}
+                        style={{ marginRight: '15px' }}>
+                        查询
+                    </Button>
+                    <Button
+                        type={'primary'}
+                        icon={'close'}
+                        onClick={handleResetCondition}
+                        style={{ marginRight: '15px' }}>
+                        重置查询条件
+                    </Button>
                     <Button type={'primary'} icon={'reload'} onClick={handleRefresh}>
                         刷新
                     </Button>
