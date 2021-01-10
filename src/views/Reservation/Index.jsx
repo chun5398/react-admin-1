@@ -163,7 +163,7 @@ const Reservation = () => {
                                         title={`确定退款 ${record.prodName} ?`}
                                         cancelText={'取消'}
                                         okText={'确定'}
-                                        onConfirm={handleRefund(record)}>
+                                        onConfirm={record => handleRefund(record)}>
                                         <a>退款</a>
                                     </Popconfirm>
                                 ) : null}
