@@ -76,7 +76,7 @@ const Reservation = () => {
             beginPage: currentPage,
             pageSize: 10,
             phone,
-            bookDate
+            bookDate: bookDate ? bookDate._i : null
         }
         axios
             .post(API.RESERVATION.READ, param)
