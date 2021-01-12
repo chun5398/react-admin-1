@@ -121,7 +121,7 @@ const UserEdit = props => {
                             </FormItem>
                             <FormItem {...tailFormItemLayout}>
                                 <Button type={'primary'} style={{ marginRight: 16 }} onClick={handleHistoryBack}>
-                                    取消
+                                    返回
                                 </Button>
                                 <Button type={'primary'} htmlType={'submit'}>
                                     {'提交修改'}

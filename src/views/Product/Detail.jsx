@@ -199,7 +199,7 @@ const Detail = props => {
                             </FormItem>
                             <FormItem {...tailFormItemLayout}>
                                 <Button type={'primary'} style={{ marginRight: 16 }} onClick={handleHistoryBack}>
-                                    取消
+                                    返回
                                 </Button>
                                 <Button type={'primary'} htmlType={'submit'}>
                                     {id === -1 ? '新增产品' : '提交修改'}
