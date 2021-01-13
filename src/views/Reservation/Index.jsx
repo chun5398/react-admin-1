@@ -40,6 +40,8 @@ const Reservation = () => {
     }
 
     const handleRefund = record => {
+        console.log(record)
+        return
         setLoading(true)
         axios
             .post(API.REFUND.UPDATE, { outTradeNo: record.outTradeNo })

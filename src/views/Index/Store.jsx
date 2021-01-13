@@ -5,6 +5,7 @@ import '@/style/view-style/index.scss'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import { SUCCESS } from '../../constants'
+import request from 'axios'
 
 const FormItem = Form.Item
 
@@ -73,37 +74,56 @@ const Store = props => {
         const removed = banner.filter(item => item.uid !== file.uid)
         setBanner(removed)
     }
-
+    const randomString = len => {
+        len = len || 32
+        let $chars =
+            'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678' /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+        let maxPos = $chars.length
+        let pwd = ''
+        for (let i = 0; i < len; i++) {
+            pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
+        }
+        return pwd
+    }
     const handleUpload = options => {
-        const file = new FormData()
-        const timestamp = +new Date()
-        file.append('file', options.file)
-        axios
-            .post(
-                API.UPLOAD,
-                { file: file.get('file') },
-                {
-                    headers: {
-                        'Content-Type': `multipart/form-data;boundary=${timestamp}`
+        //'6jwpHyBuz5iALV7'
+        console.log(options)
+        if (options.file && !options.file.status) {
+            console.log(options)
+            const file = new FormData()
+            file.append('file', options.fileList[2].originFileObj)
+
+            axios
+                .post(
+                    API.UPLOAD,
+                    { file: file },
+                    {
+                        headers: {
+                            'Content-Type': `multipart/form-data; boundary=----WebKitFormBoundary${randomString(15)}`
+                        }
                     }
-                }
-            )
-            .then(res => {
-                if (res.code === SUCCESS) {
-                    const item = {
-                        uid: res.data.id,
-                        name: banner.length,
-                        url: res.data.url
+                )
+                .then(res => {
+                    if (res.code === SUCCESS) {
+                        const item = {
+                            uid: res.data.id,
+                            name: banner.length,
+                            url: res.data.url
+                        }
+                        setBanner(banner.push(item))
+                    } else {
+                        message.error(res.message)
                     }
-                    setBanner(banner.push(item))
-                } else {
-                    message.error(res.message)
-                }
-            })
+                })
+        }
     }
 
     const setValue = field => {
         return store ? store[field] : null
+    }
+
+    const handleChangeBanner = (file, filelist) => {
+        console.log(file, filelist)
     }
 
     const formItemLayout = {
@@ -138,6 +158,10 @@ const Store = props => {
             <div className='ant-upload-text'>上传图片</div>
         </div>
     )
+
+    const handleSuccess = (res, file, xhr) => {
+        console.log(res, file, xhr)
+    }
 
     return (
         <Layout className='index animated fadeIn'>
@@ -178,10 +202,13 @@ const Store = props => {
                     </FormItem>
                     <FormItem label={'首页轮播图'}>
                         <Upload
+                            method={'POST'}
                             fileList={banner}
                             onRemove={handleRemove}
+                            data={{ mtokenId: localStorage.getItem('mtokenId') }}
+                            action={`/yuanle${API.UPLOAD}`}
                             listType={'picture-card'}
-                            customRequest={handleUpload}>
+                            onSuccess={(res, file, xhr) => handleSuccess(res, file, xhr)}>
                             {banner.length < 3 ? UploadButton : null}
                         </Upload>
                     </FormItem>
