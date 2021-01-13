@@ -40,11 +40,23 @@ const Reservation = () => {
     }
 
     const handleRefund = record => {
-        console.log(record)
-        return
         setLoading(true)
         axios
-            .post(API.REFUND.UPDATE, { outTradeNo: record.outTradeNo })
+            .post(API.REFUND.AGREE, { outTradeNo: record.outTradeNo })
+            .then(res => {
+                setLoading(false)
+                res.code === SUCCESS && message.success('操作成功')
+                res.code !== SUCCESS && message.error('操作失败')
+            })
+            .catch(err => {
+                setLoading(false)
+            })
+    }
+
+    const handleRejectRefund = record => {
+        setLoading(true)
+        axios
+            .post(API.REFUND.REJECT, { outTradeNo: record.outTradeNo })
             .then(res => {
                 setLoading(false)
                 res.code === SUCCESS && message.success('操作成功')
@@ -149,6 +161,7 @@ const Reservation = () => {
                             setCurrentPage(page)
                         }
                     }}>
+                    <Column title={'昵称'} dataIndex={'userName'} />
                     <Column title={'预约服务'} dataIndex={'prodName'} />
                     <Column title={'预约日期'} dataIndex={'bookDate'} />
                     <Column title={'开始时间'} dataIndex={'startTime'} />
@@ -161,13 +174,23 @@ const Reservation = () => {
                         render={record => (
                             <Fragment>
                                 {record.status === 6 ? (
-                                    <Popconfirm
-                                        title={`确定退款 ${record.prodName} ?`}
-                                        cancelText={'取消'}
-                                        okText={'确定'}
-                                        onConfirm={record => handleRefund(record)}>
-                                        <a>退款</a>
-                                    </Popconfirm>
+                                    <Fragment>
+                                        <Popconfirm
+                                            title={`确定 ${record.userName}(${record.phone})的退款申请 ?`}
+                                            cancelText={'取消'}
+                                            okText={'确定'}
+                                            onConfirm={() => handleRefund(record)}>
+                                            <a>同意</a>
+                                        </Popconfirm>
+                                        <Divider type={'vertical'} />
+                                        <Popconfirm
+                                            title={`拒绝 ${record.userName}(${record.phone})的退款申请 ?`}
+                                            cancelText={'取消'}
+                                            okText={'确定'}
+                                            onConfirm={() => handleRejectRefund(record)}>
+                                            <a>拒绝</a>
+                                        </Popconfirm>
+                                    </Fragment>
                                 ) : null}
                                 {record.status === 1 ? (
                                     <Popconfirm

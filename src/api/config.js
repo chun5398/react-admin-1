@@ -77,7 +77,11 @@ export const API = {
         /**
          * 处理退款申请
          */
-        UPDATE: '/pay/sys/refund'
+        AGREE: '/pay/sys/refund',
+        /**
+         * 拒绝退款申请
+         */
+        REJECT: '/book/refundReject'
     },
     /**
      * 文件上传
