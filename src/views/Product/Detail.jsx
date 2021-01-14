@@ -42,7 +42,7 @@ const Detail = props => {
             }
 
             const { prodImgUrl, ...rest } = product
-            const param = { ...rest, ...fieldsValue, prodImgId: produdctImage.uid }
+            const param = { ...rest, ...fieldsValue, prodImgId: produdctImage[0].uid }
 
             const url = id === -1 ? API.PRODUCT.CREATE : API.PRODUCT.UPDATE
 
@@ -61,40 +61,6 @@ const Detail = props => {
     const handleRemove = file => {
         const removed = produdctImage.filter(item => item.uid !== file.uid)
         setProdudctImage(removed)
-    }
-
-    const handleUpload = options => {
-        setUploadLoading(true)
-        const timestamp = +new Date()
-        const file = new FormData()
-        file.append('file', options.file)
-        axios
-            .post(
-                API.UPLOAD,
-                { file: file.get('file') },
-                {
-                    headers: {
-                        'Content-Type': `multipart/form-data;boundary=${timestamp}`
-                    }
-                }
-            )
-            .then(res => {
-                if (res.code === SUCCESS) {
-                    const item = {
-                        uid: res.data.id,
-                        name: produdctImage.length,
-                        url: res.data.url
-                    }
-                    setProdudctImage(produdctImage.push(item))
-                    message.success('图片上传成功')
-                }
-            })
-            .catch(err => {
-                message.error(err.message)
-            })
-            .finally(() => {
-                setUploadLoading(false)
-            })
     }
 
     const handleHistoryBack = () => {
@@ -133,6 +99,16 @@ const Detail = props => {
             <div className={'antd-upload-text'}>点击上传</div>
         </div>
     )
+
+    const handleSuccess = (res, file, xhr) => {
+        console.log(res)
+        if (res.code === SUCCESS) {
+            const { id, url } = res.data
+            setProdudctImage([...produdctImage, { uid: id, url: url, name: produdctImage.length }])
+        } else {
+            message.error(res.message || '上传失败')
+        }
+    }
 
     return (
         <Layout>
@@ -178,24 +154,12 @@ const Detail = props => {
                                     fileList={produdctImage}
                                     onRemove={handleRemove}
                                     listType={'picture-card'}
-                                    customRequest={handleUpload}>
+                                    data={{ mtokenId: localStorage.getItem('mtokenId') }}
+                                    action={`/yuanle${API.UPLOAD}`}
+                                    listType={'picture-card'}
+                                    onSuccess={(res, file, xhr) => handleSuccess(res, file, xhr)}>
                                     {produdctImage.length < 1 ? UploadButton : null}
                                 </Upload>
-                                {/* <Upload name={'file'} beforeUpload={file => handleBeforeUpload(file)}>
-                                    {product && product.prodImgUrl ? (
-                                        <img src={product.prodImgUrl} style={{ width: 200 }} />
-                                    ) : (
-                                        UploadButton
-                                    )}
-                                </Upload>
-                                <Button
-                                    type={'primary'}
-                                    onClick={handleUpload}
-                                    disabled={!uploadImage}
-                                    loading={uploadLoading}
-                                    style={{ marginTop: 16 }}>
-                                    上传图片
-                                </Button> */}
                             </FormItem>
                             <FormItem {...tailFormItemLayout}>
                                 <Button type={'primary'} style={{ marginRight: 16 }} onClick={handleHistoryBack}>
