@@ -160,7 +160,12 @@ const Store = props => {
     )
 
     const handleSuccess = (res, file, xhr) => {
-        console.log(res, file, xhr)
+        if (res.code === SUCCESS) {
+            const { id, url } = res.data
+            setBanner([...banner, { uid: id, url: url, name: banner.length }])
+        } else {
+            message.error(res.message || '上传失败')
+        }
     }
 
     return (
