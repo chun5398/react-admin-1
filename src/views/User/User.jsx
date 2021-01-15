@@ -91,6 +91,7 @@ const Product = props => {
                         )}
                     />
                     <Column title={'备注'} dataIndex={'remark'} />
+                    <Column title={'手机号'} dataIndex={'phone'} />
                     <Column title={'余额'} dataIndex={'amount'} render={record => <span>{record} 元</span>} />
                     <Column
                         title={'操作'}
