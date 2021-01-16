@@ -60,12 +60,15 @@ const Reservation = () => {
         axios
             .post(API.REFUND.REJECT, { outTradeNo: record.outTradeNo })
             .then(res => {
-                setLoading(false)
                 res.code === SUCCESS && message.success('操作成功')
                 res.code !== SUCCESS && message.error('操作失败')
             })
             .catch(err => {
+                message.error(err.message || '未知错误')
+            })
+            .finally(() => {
                 setLoading(false)
+                handleFilterQuery()
             })
     }
 
