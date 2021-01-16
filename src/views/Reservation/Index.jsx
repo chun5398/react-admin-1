@@ -10,10 +10,6 @@ import moment from 'moment'
 const { Column } = Table
 
 const Reservation = () => {
-    const currentTime = new Date()
-    const format = 'YYYY-MM-DD'
-    const timeString = `${currentTime.getFullYear()}-${currentTime.getMonth()}-${currentTime.getDay()}`
-
     const [total, setTotal] = useState(0)
     const [reservations, setReservations] = useState([])
     const [loading, setLoading] = useState(true)
@@ -35,6 +31,9 @@ const Reservation = () => {
                 res.code !== SUCCESS && message.error('操作失败')
             })
             .catch(err => {
+                message.error(err.message || '未知错误')
+            })
+            .finally(() => {
                 setLoading(false)
             })
     }
@@ -44,12 +43,15 @@ const Reservation = () => {
         axios
             .post(API.REFUND.AGREE, { outTradeNo: record.outTradeNo })
             .then(res => {
-                setLoading(false)
                 res.code === SUCCESS && message.success('操作成功')
                 res.code !== SUCCESS && message.error('操作失败')
             })
             .catch(err => {
+                message.error(err.message || '未知错误')
+            })
+            .finally(() => {
                 setLoading(false)
+                handleFilterQuery()
             })
     }
 

@@ -5,15 +5,12 @@ import '@/style/view-style/index.scss'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import { SUCCESS } from '../../constants'
-import request from 'axios'
 
 const FormItem = Form.Item
 
 const Store = props => {
     const [store, setStore] = useState(null)
     const [banner, setBanner] = useState([])
-    const [uploadImage, setUploadImage] = useState(null)
-    const [uploadLoading, setUploadLoading] = useState(false)
 
     const latitude = 30.622738
     const longitude = 104.121294
@@ -74,58 +71,10 @@ const Store = props => {
         const removed = banner.filter(item => item.uid !== file.uid)
         setBanner(removed)
     }
-    const randomString = len => {
-        len = len || 32
-        let $chars =
-            'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678' /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
-        let maxPos = $chars.length
-        let pwd = ''
-        for (let i = 0; i < len; i++) {
-            pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
-        }
-        return pwd
-    }
-    const handleUpload = options => {
-        //'6jwpHyBuz5iALV7'
-        console.log(options)
-        if (options.file && !options.file.status) {
-            console.log(options)
-            const file = new FormData()
-            file.append('file', options.fileList[2].originFileObj)
-
-            axios
-                .post(
-                    API.UPLOAD,
-                    { file: file },
-                    {
-                        headers: {
-                            'Content-Type': `multipart/form-data; boundary=----WebKitFormBoundary${randomString(15)}`
-                        }
-                    }
-                )
-                .then(res => {
-                    if (res.code === SUCCESS) {
-                        const item = {
-                            uid: res.data.id,
-                            name: banner.length,
-                            url: res.data.url
-                        }
-                        setBanner(banner.push(item))
-                    } else {
-                        message.error(res.message)
-                    }
-                })
-        }
-    }
 
     const setValue = field => {
         return store ? store[field] : null
     }
-
-    const handleChangeBanner = (file, filelist) => {
-        console.log(file, filelist)
-    }
-
     const formItemLayout = {
         labelCol: {
             xs: { span: 16 },
