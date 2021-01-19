@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
-import { Layout, Row, Col, Form, Input, Button, Upload, Icon, message } from 'antd'
+import { Layout, Row, Col, Form, Input, Button, message } from 'antd'
 import { useParams, useHistory } from 'react-router-dom'
 import { SUCCESS } from '../../constants'
 

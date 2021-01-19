@@ -153,7 +153,6 @@ const Detail = props => {
                                 <Upload
                                     fileList={produdctImage}
                                     onRemove={handleRemove}
-                                    listType={'picture-card'}
                                     data={{ mtokenId: localStorage.getItem('mtokenId') }}
                                     action={`/yuanle${API.UPLOAD}`}
                                     listType={'picture-card'}
