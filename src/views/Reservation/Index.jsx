@@ -26,7 +26,6 @@ const Reservation = () => {
         axios
             .post(API.RESERVATION.UPDATE, { bookId: record.id })
             .then(res => {
-                setLoading(false)
                 res.code === SUCCESS && message.success('操作成功')
                 res.code !== SUCCESS && message.error('操作失败')
             })
@@ -35,6 +34,7 @@ const Reservation = () => {
             })
             .finally(() => {
                 setLoading(false)
+                handleFilterQuery()
             })
     }
 
@@ -171,6 +171,7 @@ const Reservation = () => {
                     <Column title={'预约日期'} dataIndex={'bookDate'} />
                     <Column title={'开始时间'} dataIndex={'startTime'} />
                     <Column title={'结束时间'} dataIndex={'endTime'} />
+                    <Column title={'金额'} dataIndex={'prodPrice'} />
                     <Column title={'状态'} dataIndex={'statusName'} />
                     <Column title={'联系电话'} dataIndex={'phone'} />
                     <Column
