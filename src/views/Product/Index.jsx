@@ -44,6 +44,10 @@ const Product = props => {
             .catch(err => {
                 message.error(err.message)
             })
+            .finally(() => {
+                setLoading(false)
+                handleRefresh()
+            })
     }
 
     const handleRefresh = () => {
@@ -122,7 +126,7 @@ const Product = props => {
                                     cancelText={'取消'}
                                     okText={'确定'}
                                     title={`确定删除 ${record.prodName} ?`}
-                                    onConfirm={() => handleDelete(record)}>
+                                    onConfirm={() => handleDelete(record.id)}>
                                     <a>删除</a>
                                 </Popconfirm>
                                 <Divider type={'vertical'} />
