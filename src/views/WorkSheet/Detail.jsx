@@ -14,8 +14,8 @@ const Detail = props => {
     const history = useHistory()
 
     const [id, setId] = useState(-1)
-    const [startTime, setStartTime] = useState('00:00')
-    const [endTime, setEndTime] = useState('00:00')
+    const [startTime, setStartTime] = useState('00:00:00')
+    const [endTime, setEndTime] = useState('00:00:00')
     const [maxOrder, setMaxOrder] = useState(0)
 
     useEffect(() => {
@@ -43,8 +43,8 @@ const Detail = props => {
         props.form.validateFieldsAndScroll((err, fieldsValue) => {
             if (err) return
             const { maxOrder } = fieldsValue
-            const startTime = fieldsValue.startTime.format('HH:mm')
-            const endTime = fieldsValue.endTime.format('HH:mm')
+            const startTime = fieldsValue.startTime.format('HH:mm:ss')
+            const endTime = fieldsValue.endTime.format('HH:mm:ss')
 
             if (id !== -1) {
                 axios
