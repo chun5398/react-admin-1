@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Fragment, memo } from 'react'
 import CustomBreadcrumb from '@/components/CustomBreadcrumb'
-import { Layout, Divider, Table, Button, message } from 'antd'
+import { Layout, Divider, Table, Button, Popconfirm, message } from 'antd'
 import axios from '../../api/index'
 import { API } from '../../api/config'
 import { SUCCESS } from '../../constants'
@@ -67,6 +67,22 @@ const WorkSheet = () => {
         localStorage.setItem('editWorkSheet', JSON.stringify(record))
     }
 
+    const handleDelete = id => {
+        setLoading(true)
+        axios
+            .post(API.WORKSHEET.DELETE, { id })
+            .then(res => {
+                res.code === SUCCESS && setLoading(false) && message.success('删除成功')
+            })
+            .catch(err => {
+                message.error(err.message)
+            })
+            .finally(() => {
+                setLoading(false)
+                handleRefresh()
+            })
+    }
+
     return (
         <Layout>
             <div>
@@ -100,7 +116,19 @@ const WorkSheet = () => {
                     <Column
                         title={'操作'}
                         dataIndex={''}
-                        render={record => <a onClick={() => handleEdit(record)}>编辑</a>}
+                        render={record => (
+                            <Fragment>
+                                <Popconfirm
+                                    cancelText={'取消'}
+                                    okText={'确定'}
+                                    title={`确定删除`}
+                                    onConfirm={() => handleDelete(record.id)}>
+                                    <a>删除</a>
+                                </Popconfirm>
+                                <Divider type={'vertical'} />
+                                <a onClick={() => handleEdit(record)}>编辑</a>
+                            </Fragment>
+                        )}
                     />
                 </Table>
             </div>
