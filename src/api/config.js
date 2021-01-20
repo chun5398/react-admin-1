@@ -33,7 +33,7 @@ export const API = {
         /**
          * 新增工作表
          */
-        CREATE: '/worksheet/insertWorksheet',
+        CREATE: '/worksheet/add',
         /**
          * 查询工作表
          */
@@ -41,7 +41,12 @@ export const API = {
         /**
          * 修改工作表
          */
-        UPDATE: '/worksheet/updateWorksheet'
+        UPDATE: '/worksheet/update',
+        /**
+         * 删除
+         *
+         */
+        DELETE: '/worksheet/delete'
     },
     /**
      * 门店信息
