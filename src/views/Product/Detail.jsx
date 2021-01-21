@@ -41,8 +41,14 @@ const Detail = props => {
                 return
             }
 
-            const { prodImgUrl, ...rest } = product
-            const param = { ...rest, ...fieldsValue, prodImgId: produdctImage[0].uid }
+            let param
+
+            if (id === -1) {
+                param = { ...fieldsValue, prodImgId: produdctImage[0].uid }
+            } else {
+                const { prodImgUrl, ...rest } = product
+                param = { ...rest, ...fieldsValue, prodImgId: produdctImage[0].uid }
+            }
 
             const url = id === -1 ? API.PRODUCT.CREATE : API.PRODUCT.UPDATE
 
